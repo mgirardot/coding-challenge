@@ -11,7 +11,7 @@ import os
 
 # loads Twitter credentials from .twitter file that is in the same directory as this script
 file_dir = os.path.dirname(os.path.realpath(__file__)) 
-with open(file_dir + '/.twitter') as twitter_file:  
+with open(file_dir + '/acces.twitter') as twitter_file:  
     twitter_cred = json.load(twitter_file)
 
 # authentication from the credentials file above
@@ -48,4 +48,4 @@ if __name__ == '__main__':
 
     print "Use CTRL + C to exit at any time.\n"
     stream = Stream(auth, listener)
-    stream.filter(locations=[-180,-90,180,90]) # this is the entire world, any tweet with geo-location enabled
+    stream.filter( track=['Spark','Hadoop', 'Apache', 'Storm', 'Neo4j']) 
