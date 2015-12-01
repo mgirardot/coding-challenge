@@ -253,9 +253,10 @@ for i in range(window, timings[-1]):
 
 ###################################################################
 
+
 def nodeDegree(timings, tag_list, start_time, end_time):
-    tags = {}
     itags = []
+    tags = {}
     for i in range(start_time,end_time):
         try:
             itags = tag_list[timings.index(i)]
@@ -273,17 +274,35 @@ def nodeDegree(timings, tag_list, start_time, end_time):
     total_tags = float(len(tags))
     return(round(total_links/total_tags, 2))
 
-nodeDegree(timings, tag_list, timings[0], window)
+#nodeDegree(timings, tag_list, timings[0], window)
 
-def rollingAverage(timings, tag_list, windowLength):
-    window = timings[0] + windowLength-1
+def rollingAverage(timings, tag_list, windowLength=60):
+    window = timings[0] + windowLength-1 #[59]
     rollAvg = []
-    firstWindow = nodeDegree(timings, tag_list, timings[0], window)
-    rollAvg.append(firstWindow)
-    
-    for i in range(window, timings[-1]):
+    itags = []
+    tags = {}
+    for i in range(timings[0], window): #[0-59]
         try:
-            toThrow = tag_list[timings.index(i - windowLength)]
+            itags = tag_list[timings.index(i)]
+            if len(itags) > 1:
+                for t in itags:
+                    if (t in tags.keys()):
+                        tags[t] += len(itags)-1  #degree of the node incremented by the number of edges
+                    else:
+                        tags[t] = len(itags)-1   # or created if not in the dict
+        except ValueError:
+            pass
+        
+
+    total_links = float(reduce(lambda x,y: x+y, tags.values()))
+    total_tags = float(len(tags))
+    #ºfirstWindow = nodeDegree(timings, tag_list, timings[0], window)
+    rollAvg.append(round(total_links/total_tags, 2))
+    
+    
+    for i in range(window, timings[-1]): #[59-65]
+        try:
+            toThrow = tag_list[timings.index(i - windowLength)] #[0-6]
         
             for t in toThrow:
                 if (tags[t] > len(itags)-1):
@@ -293,14 +312,31 @@ def rollingAverage(timings, tag_list, windowLength):
         except ValueError:
             pass 
         
-        nextWindow = nodeDegree(timings,tag_list, i, i+window)
+        try:
+            itags = tag_list[timings.index(i)]
+            if len(itags) > 1:
+                for t in itags:
+                    if (t in tags.keys()):
+                        tags[t] += len(itags)-1  #degree of the node incremented by the number of edges
+                    else:
+                        tags[t] = len(itags)-1   # or created if not in the dict
+        except ValueError:
+            pass
 
-        rollAvg.append(nextWindow)
+        total_links = float(reduce(lambda x,y: x+y, tags.values()))
+        total_tags = float(len(tags))
+        rollAvg.append(round(total_links/total_tags, 2))
     return rollAvg
     
+
+
+#####################################################
+timings = [01,30,55,56,59,65]
+tag_list = [["Spark","Apache"],["Apache","Hadoop", "Storm"],["Apache"],["Flink","Spark"], ["HBase","Spark"], ["Hadoop","Apache"]]
+windowLength = 60
+#####################################################
 rollingAverage(timings, tag_list, 60)
-
-
+#2.00 2.00 1.67
 
 
 
