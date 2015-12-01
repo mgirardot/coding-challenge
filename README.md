@@ -1,6 +1,6 @@
 Insight Data Engineering - Coding Challenge
 ===========================================================
-
+[![Build Status](https://travis-ci.org/mgirardot/coding-challenge.svg?branch=master)](https://travis-ci.org/mgirardot/coding-challenge)
 For this coding challenge, you will develop tools that could help analyze the community of Twitter users.  For simplicity, the features we will build are primitive, but you could easily build more complicated features on top of these.   
 
 ## Challenge Summary
